@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:my_portfolio/constants/app_config.dart';
 import 'package:my_portfolio/constants/colors.dart';
+import 'package:my_portfolio/model/investment_model.dart';
+import 'package:my_portfolio/providers/investment_provider.dart';
+import 'package:provider/provider.dart';
 
-class AddTodoBttomSheet extends StatefulWidget {
+class AddInvestmentBottomSheet extends StatefulWidget {
   final bool forEdit;
-  const AddTodoBttomSheet({required this.forEdit, super.key});
+  const AddInvestmentBottomSheet({required this.forEdit, super.key});
 
   @override
-  State<AddTodoBttomSheet> createState() => _AddTodoBttomSheetState();
+  State<AddInvestmentBottomSheet> createState() =>
+      _AddInvestmentBottomSheetState();
 }
 
-class _AddTodoBttomSheetState extends State<AddTodoBttomSheet> {
+class _AddInvestmentBottomSheetState extends State<AddInvestmentBottomSheet> {
   final _formkey = GlobalKey<FormState>();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController amountInvestedController =
+      TextEditingController();
+  final TextEditingController currentValueController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +29,7 @@ class _AddTodoBttomSheetState extends State<AddTodoBttomSheet> {
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: SingleChildScrollView(
         child: Container(
-          height: appConfig.deviceHeight(55),
+          height: appConfig.deviceHeight(65),
           color: AppColors.whitecolor,
           child: Column(
             children: [
@@ -54,10 +62,11 @@ class _AddTodoBttomSheetState extends State<AddTodoBttomSheet> {
                         child: TextFormField(
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter a title';
+                              return 'Please enter a name';
                             }
                             return null;
                           },
+                          controller: nameController,
                           cursorColor: AppColors.primaryColor,
                           keyboardType: TextInputType.name,
                           decoration: InputDecoration(
@@ -94,10 +103,11 @@ class _AddTodoBttomSheetState extends State<AddTodoBttomSheet> {
                         child: TextFormField(
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter a description';
+                              return 'Please enter a amount';
                             }
                             return null;
                           },
+                          controller: amountInvestedController,
                           cursorColor: AppColors.primaryColor,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
@@ -134,10 +144,11 @@ class _AddTodoBttomSheetState extends State<AddTodoBttomSheet> {
                         child: TextFormField(
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter a description';
+                              return 'Please enter a amount';
                             }
                             return null;
                           },
+                          controller: currentValueController,
                           cursorColor: AppColors.primaryColor,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
@@ -159,7 +170,20 @@ class _AddTodoBttomSheetState extends State<AddTodoBttomSheet> {
                           MaterialButton(
                             color: AppColors.greencolor,
                             onPressed: () async {
-                              FocusScope.of(context).unfocus();
+                              if (nameController.text.isNotEmpty &&
+                                  amountInvestedController.text.isNotEmpty &&
+                                  currentValueController.text.isNotEmpty) {
+                                final investment = InvestmentModel(
+                                    name: nameController.text,
+                                    amountInvested: double.parse(
+                                        amountInvestedController.text),
+                                    currentValue: double.parse(
+                                        currentValueController.text));
+                                Provider.of<InvestmentProvider>(context,
+                                        listen: false)
+                                    .addInvestment(investment);
+                                Navigator.pop(context);
+                              } else if (_formkey.currentState!.validate()) {}
                             },
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(40.0),
@@ -178,7 +202,9 @@ class _AddTodoBttomSheetState extends State<AddTodoBttomSheet> {
                           ),
                           MaterialButton(
                             color: AppColors.redColor,
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(40.0),
                             ),

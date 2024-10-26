@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:my_portfolio/constants/app_config.dart';
 import 'package:my_portfolio/constants/colors.dart';
+import 'package:my_portfolio/model/investment_model.dart';
 
 class InvestmentDetailScreen extends StatefulWidget {
-  const InvestmentDetailScreen({super.key});
+  final InvestmentModel data;
+  const InvestmentDetailScreen({super.key, required this.data});
 
   @override
   State<InvestmentDetailScreen> createState() => _InvestmentDetailScreenState();
@@ -32,7 +34,7 @@ class _InvestmentDetailScreenState extends State<InvestmentDetailScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'abc',
+                    widget.data.name,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: appConfig.textSizeScale(40),
@@ -42,7 +44,7 @@ class _InvestmentDetailScreenState extends State<InvestmentDetailScreen> {
                     height: appConfig.deviceHeight(2),
                   ),
                   Text(
-                    'Amount Invested:',
+                    'Amount Invested: \$ ${widget.data.amountInvested}',
                     style: TextStyle(
                         fontSize: appConfig.textSizeScale(25),
                         color: AppColors.greycolor),
@@ -51,7 +53,7 @@ class _InvestmentDetailScreenState extends State<InvestmentDetailScreen> {
                     height: appConfig.deviceHeight(2),
                   ),
                   Text(
-                    'Current Value:',
+                    'Current Value: \$ ${widget.data.currentValue}',
                     style: TextStyle(
                         fontSize: appConfig.textSizeScale(25),
                         color: AppColors.greycolor),
